@@ -22,10 +22,10 @@ class VectorNavIMU(ImuInterface):
 
     def initialize(self) -> None:
         interval = 0.01
-        total = 5 / interval
+        total = int(5 / interval)
         self.log(f"Calibrating IMU heading over 5 seconds ({total} checks)...")
         heading_sum = 0
-        for i in np.linspace(0, 5, interval):
+        for i in np.linspace(0, 5, total):
             heading_sum += self.vectornav.read_yaw_pitch_roll().x
         self.calibrated_heading = heading_sum / total
 

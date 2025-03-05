@@ -6,7 +6,7 @@ from hardware.sensors import VectorNavIMU, DepthSensor
 class HovercraftHardware:
     def __init__(self, *, arduino_port, vectornav_port, vectornav_baud=921600, depth_bus=1):
         self.motor_serial = MotorSerial(arduino_port) 
-        self.imu = VectorNavIMU(vectornav_baud)
+        self.imu = VectorNavIMU(vectornav_port, vectornav_baud)
         self.depth = DepthSensor(bus=depth_bus)
 
         self.prev = {}
@@ -19,7 +19,7 @@ class HovercraftHardware:
         self.motor_serial.send({pin: magnitude})
 
     def initialize_motor(self, pin):
-        pass
+        return 0
 
     def kill(self):
         self.motor_serial.kill()

@@ -12,6 +12,13 @@ from hardware_interface import HovercraftHardware
 
 
 motor_locations = [
+    # horizontals
+    np.array([-1., -1., 0.]),
+    np.array([-1., 1., 0.]),
+    np.array([1., 1., 0.]),
+    np.array([1., -1., 0.]),
+
+    # verticals
     np.array([-1., -1., 0.]),
     np.array([-1., 1., 0.]),
     np.array([1., 1., 0.]),
@@ -22,13 +29,18 @@ motor_directions = [
     np.array([1., -1., 0.]),
     np.array([1., 1., 0.]),
     np.array([1., -1., 0.]),
-    np.array([1., 1., 0.])
+    np.array([1., 1., 0.]),
+
+    np.array([0, 0, 1.]),
+    np.array([0, 0, 1.]),
+    np.array([0, 0, 1.]),
+    np.array([0, 0, 1.])
     ]
 
 
 
-bounds = [[-0.2, 0.2]] * 4
-deadzone = [[-0.11, 0.11]] * 4
+bounds = [[-0.2, 0.2]] * 8
+deadzone = [[-0.11, 0.11]] * 8
 
 hardware = HovercraftHardware(
     arduino_port='/dev/ttyUSB0',
