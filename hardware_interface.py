@@ -3,7 +3,7 @@ import numpy as np
 from hardware.motor_serial import MotorSerial
 from hardware.sensors import VectorNavIMU, DepthSensor
 
-class HovercraftHardware:
+class SubHardware:
     def __init__(self, *, arduino_port, vectornav_port, vectornav_baud=921600, depth_bus=1):
         self.motor_serial = MotorSerial(arduino_port) 
         self.imu = VectorNavIMU(vectornav_port, vectornav_baud)

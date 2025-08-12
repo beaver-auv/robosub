@@ -1,5 +1,4 @@
 import numpy as np
-import quaternion
 
 from ezauv.auv import AUV
 from ezauv.hardware import MotorController, Motor, SensorInterface
@@ -7,8 +6,10 @@ from ezauv.utils.inertia import InertiaBuilder, Cuboid
 from ezauv.mission.tasks.main import AccelerateVector
 from ezauv.mission.tasks.subtasks import HeadingPID
 from ezauv.mission import Path
+from ezauv import AccelerationState
 
-from hardware_interface import HovercraftHardware
+
+from hardware_interface import SubHardware
 
 
 motor_locations = [
@@ -42,7 +43,7 @@ motor_directions = [
 bounds = [[-0.2, 0.2]] * 8
 deadzone = [[-0.11, 0.11]] * 8
 
-hardware = HovercraftHardware(
+hardware = SubHardware(
     arduino_port='/dev/ttyUSB0',
     vectornav_port='/dev/ttyUSB1'
 )
@@ -69,15 +70,16 @@ anchovy = AUV(
                 for i, (loc, direction) in enumerate(zip(motor_locations, motor_directions))
                 ]
         ),
-        sensors = SensorInterface(imu=hardware.imu, depth=hardware.depth),
-        pin_kill = hardware.kill
+        sensors = SensorInterface(sensors=[hardware.imu, hardware.depth]),
+        pin_kill = hardware.kill,
+        lock_to_yaw=True
     )
 
 anchovy.register_subtask(HeadingPID(0, 0.03, 0.0, 0.01))
 
 
 mission = Path(
-    AccelerateVector(np.array([0., 0., 0., 0., 0., 0.]), 20)
+    AccelerateVector(AccelerationState(), 20)
 )
 
 anchovy.travel_path(mission)

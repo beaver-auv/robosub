@@ -1,12 +1,12 @@
 import numpy as np
-import quaternion
+from scipy.spatial.transform import Rotation as R
 from vnpy import VnSensor
 from ms5837 import DENSITY_FRESHWATER, MS5837_30BA
 
-from ezauv.hardware.sensor_interface import ImuInterface, DepthInterface
+from ezauv.hardware.sensor_interface import Sensor
 
 
-class VectorNavIMU(ImuInterface):
+class VectorNavIMU(Sensor):
     def __init__(self, port, baud):
         self.vectornav = VnSensor()
         self.vectornav.connect(port, baud)
@@ -16,9 +16,13 @@ class VectorNavIMU(ImuInterface):
         accel = self.vectornav.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates().accel
         return np.array([accel.x, accel.y, accel.z])
 
-    def get_rotation(self) -> np.quaternion:
+    def get_data(self) -> dict:
         rot = self.vectornav.read_yaw_pitch_roll()
-        return quaternion.from_euler_angles(rot.x, rot.y, rot.z)
+        # rot.x == yaw, rot.y == pitch, rot.z == roll
+        return {
+            "rotation": R.from_euler(rot.x - self.calibrated_heading, rot.y, rot.z, "zyx"),
+            "acceleration": np.array([accel.x, accel.y, accel.z])
+            }
 
     def initialize(self) -> None:
         interval = 0.01
@@ -32,19 +36,19 @@ class VectorNavIMU(ImuInterface):
     def overview(self) -> None:
         self.log(f"VectorNav IMU --- {self.vectornav.read_model_number()}")
 
-class DepthSensor(DepthInterface):
+class DepthSensor(Sensor):
 
     def __init__(self, bus=1, density=DENSITY_FRESHWATER):
         self.sensor = MS5837_30BA(bus)
         self.initial = 0
         self.density = density
     
-    def get_depth(self) -> float:
+    def get_data(self) -> float:
         if self.sensor.read():
-            return self.sensor.depth()
+            {"depth": self.sensor.depth()}
         else:
-            print("Depth sensor died!")
-            exit(1)  # TODO error handling! seriously! this is bad!
+            self.log("Depth sensor died!")
+            exit(1)  # TODO error handling
     
     def initialize(self) -> None:
         if not self.sensor.init():
