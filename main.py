@@ -10,7 +10,7 @@ from ezauv import AccelerationState
 
 
 from hardware_interface import SubHardware
-
+from tasks.depth_pid import DepthPID
 
 motor_locations = [
     # horizontals
@@ -76,6 +76,7 @@ anchovy = AUV(
     )
 
 anchovy.register_subtask(HeadingPID(0, 0.03, 0.0, 0.01))
+anchovy.register_subtask(DepthPID(0, 0.03, 0.0, 0.01))
 
 
 mission = Path(

@@ -12,13 +12,10 @@ class VectorNavIMU(Sensor):
         self.vectornav.connect(port, baud)
         self.calibrated_heading = 0
 
-    def get_accelerations(self) -> np.ndarray:
-        accel = self.vectornav.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates().accel
-        return np.array([accel.x, accel.y, accel.z])
-
     def get_data(self) -> dict:
         rot = self.vectornav.read_yaw_pitch_roll()
         # rot.x == yaw, rot.y == pitch, rot.z == roll
+        accel = self.vectornav.read_yaw_pitch_roll_magnetic_acceleration_and_angular_rates().accel
         return {
             "rotation": R.from_euler(rot.x - self.calibrated_heading, rot.y, rot.z, "zyx"),
             "acceleration": np.array([accel.x, accel.y, accel.z])
@@ -35,6 +32,8 @@ class VectorNavIMU(Sensor):
 
     def overview(self) -> None:
         self.log(f"VectorNav IMU --- {self.vectornav.read_model_number()}")
+
+    
 
 class DepthSensor(Sensor):
 
