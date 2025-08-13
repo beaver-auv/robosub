@@ -6,7 +6,7 @@ from hardware.port_controller import PortController
 # this is a good idea; but probably not at this (the 2024) competition.
 # if future people are looking at this, use asyncio to make an event system
 
-# also didnt at 2025 comp
+# also didn't at 2025 comp
 
 
 class MotorSerial:

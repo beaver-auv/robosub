@@ -76,7 +76,7 @@ anchovy = AUV(
     )
 
 anchovy.register_subtask(HeadingPID(0, 0.03, 0.0, 0.01))
-anchovy.register_subtask(DepthPID(0, 0.03, 0.0, 0.01))
+anchovy.register_subtask(DepthPID(-0.6, 0.7, 0.0, 0.1))
 
 
 mission = Path(
