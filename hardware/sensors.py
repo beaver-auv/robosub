@@ -36,7 +36,7 @@ class VectorNavIMU(Sensor):
         self.calibrated_heading = heading_sum / total
 
     def overview(self) -> None:
-        self.log(f"VectorNav IMU --- {self.vectornav.read_model_number()}")
+        print(f"VectorNav IMU --- {self.vectornav.read_model_number()}")
 
     
 
@@ -65,7 +65,7 @@ class DepthSensor(Sensor):
         self.sensor.setFluidDensity(self.density)
 
     def overview(self) -> None:
-        self.log("remember to make this better later")
+        print("remember to make this better later")
 
 class DVLSensor(Sensor):
     def __init__(self, ip="192.168.194.95", port=16171, timeout=1.0):

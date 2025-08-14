@@ -14,6 +14,11 @@ class SubHardware:
     def set_motor(self, pin, magnitude):
         if pin in self.prev and self.prev[pin] == magnitude:
             return
+        if pin == 4:
+            for i in range(4):
+                self.motor_serial.send({4+i: magnitude/4})
+                self.prev[4+i] = magnitude
+            return
         self.prev[pin] = magnitude
 
         self.motor_serial.send({pin: magnitude})
